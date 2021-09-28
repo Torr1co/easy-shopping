@@ -1,10 +1,10 @@
-import { Button } from "antd";
+import { Radio } from "antd";
 const ShopSketch = ({ name }) => {
   return (
-    <Button className="shop" style={{ borderWidth: "3px" }}>
+    <Radio.Button value={name} className="shop" style={{ borderWidth: "3px" }}>
       <p>{name}</p>
-      <ion-icon name="wallet-outline" size="big"></ion-icon>
-    </Button>
+      {<ion-icon name="wallet-outline" size="big"></ion-icon>}
+    </Radio.Button>
   );
 };
 

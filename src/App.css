@@ -71,6 +71,7 @@ nav > p {
 .content {
   margin: 50px 0;
   padding: 0 50px;
+  min-height: 54vh;
 }
 .layout__content {
   min-height: 280px;

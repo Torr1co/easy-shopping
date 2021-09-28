@@ -1,9 +1,10 @@
-import { Form, Input, Button, Table } from "antd";
-import { useState } from "react";
+import { Form, Input, Button /*  Table  */ } from 'antd';
+// import { useState } from "react";
 
-const ShopForm = ({ open, setOpen, addShops }) => {
-  console.log(addShops);
-  const [value, setValue] = useState("");
+const ShopForm = ({
+ open, setOpen, addShopName, addShopSketch 
+}) => {
+  // const [value, setValue] = useState("");
   if (!open) return null;
 
   const formItemLayout = {
@@ -24,7 +25,7 @@ const ShopForm = ({ open, setOpen, addShops }) => {
     },
   };
 
-  ///////////
+  /// ////////
   const dataSource = [];
   for (let i = 1; i < 4; i++) {
     dataSource.push({
@@ -35,7 +36,7 @@ const ShopForm = ({ open, setOpen, addShops }) => {
     });
   }
 
-  const columns = [
+  /* const columns = [
     {
       title: "Campo1",
       dataIndex: "Campo1",
@@ -48,28 +49,30 @@ const ShopForm = ({ open, setOpen, addShops }) => {
       title: "Campo3",
       dataIndex: "Campo3",
     },
-  ];
+  ]; */
 
-  ///////////
+  /// ////////
   const onFinish = ({ shopName, values }) => {
     const shopSketch = {};
     shopSketch[shopName] = values.map((v) => {
       const obj = {};
-      obj["title"] = v.charAt(0).toUpperCase() + v.slice(1);
-      obj["dataindex"] = v;
+      obj.title = v.charAt(0).toUpperCase() + v.slice(1);
+      obj.dataIndex = v;
+      obj.editable = true;
       return obj;
     });
 
-    addShops(shopName);
-    console.log("obj: ", shopSketch);
+    addShopName(shopName);
+    addShopSketch(shopSketch);
+    console.log('obj: ', shopSketch);
   };
 
-  const isNum = (e) => {
+  /* const isNum = (e) => {
     const re = /^[0-9\b]+$/;
     if (e.target.value === "" || re.test(e.target.value)) {
       setValue(e.target.value);
     }
-  };
+  }; */
 
   return (
     <div className="add-shop-window window">
@@ -79,10 +82,9 @@ const ShopForm = ({ open, setOpen, addShops }) => {
       <div className="add-shop__content">
         <h1>Creador de plantilla para su negocio</h1>
         <p>
-          Es momento de crear su plantilla, para cada día de la semana se creara
-          una tabla a completar con la siguiente información. Por favor complete
-          de acuerdo a las necesidades de su negocio, pues estos titulos no son
-          editables
+          Es momento de crear su plantilla, para cada día de la semana se creara una tabla a
+          completar con la siguiente información. Por favor complete de acuerdo a las necesidades de
+          su negocio, pues estos titulos no son editables
         </p>
       </div>
 
@@ -93,7 +95,8 @@ const ShopForm = ({ open, setOpen, addShops }) => {
           onFinish(...values);
           setTimeout(setOpen.bind(false), 1000);
         }}
-        style={{ gridColumn: " span 2 / auto" }}
+        style={{ gridColumn: ' span 2 / auto' }}
+        autoComplete="off"
       >
         <Form.Item
           {...formItemLayout}
@@ -109,7 +112,7 @@ const ShopForm = ({ open, setOpen, addShops }) => {
             {
               validator: async (_, values) => {
                 if (!values || values.length < 2) {
-                  return Promise.reject(new Error("Al menos 2 campos"));
+                  return Promise.reject(new Error('Al menos 2 campos'));
                 }
               },
             },
@@ -137,29 +140,26 @@ const ShopForm = ({ open, setOpen, addShops }) => {
               </Form.Item> */}
               {fields.map((field, index) => (
                 <Form.Item
-                  {...(index === 0
-                    ? formItemLayout
-                    : formItemLayoutWithOutLabel)}
-                  label={index === 0 ? "Titulos" : ""}
+                  {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
+                  label={index === 0 ? 'Titulos' : ''}
                   required={false}
                   key={field.key}
                 >
                   <Form.Item
                     {...field}
-                    validateTrigger={["onChange", "onBlur"]}
+                    validateTrigger={['onChange', 'onBlur']}
                     rules={[
                       {
                         required: true,
                         whitespace: true,
-                        message:
-                          "Por favor coloque el nombre del campo o eliminelo",
+                        message: 'Por favor coloque el nombre del campo o eliminelo',
                       },
                     ]}
                     noStyle
                   >
                     <Input
                       placeholder="Nombre del campo/titulo de plantilla"
-                      style={{ width: "60%" }}
+                      style={{ width: '60%' }}
                     />
                   </Form.Item>
                   {fields.length > 1 ? (
@@ -168,18 +168,14 @@ const ShopForm = ({ open, setOpen, addShops }) => {
                       name="remove-circle-outline"
                       className="dynamic-delete-button"
                       onClick={() => remove(field.name)}
-                    ></ion-icon>
+                    />
                   ) : null}
                 </Form.Item>
               ))}
               <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  style={{ width: "60%" }}
-                >
-                  <ion-icon name="add-circle-outline"></ion-icon>A&ntilde;ade un
-                  campo para la plantilla
+                <Button type="dashed" onClick={() => add()} style={{ width: '60%' }}>
+                  <ion-icon name="add-circle-outline" />
+                  A&ntilde;ade un campo para la plantilla
                 </Button>
                 <Form.ErrorList errors={errors} />
               </Form.Item>
