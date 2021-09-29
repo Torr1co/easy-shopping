@@ -1,9 +1,7 @@
-import { Form, Input, Button /*  Table  */ } from 'antd';
+import React, { Form, Input, Button /*  Table  */ } from 'antd';
 // import { useState } from "react";
 
-const ShopForm = ({
- open, setOpen, addShopName, addShopSketch 
-}) => {
+const ShopForm = ({ open, setOpen, addShopName, addShopSketch }) => {
   // const [value, setValue] = useState("");
   if (!open) return null;
 
@@ -93,7 +91,9 @@ const ShopForm = ({
         {...formItemLayoutWithOutLabel}
         onFinish={(...values) => {
           onFinish(...values);
-          setTimeout(setOpen.bind(false), 1000);
+          setTimeout(() => {
+            setOpen(false);
+          }, 1000);
         }}
         style={{ gridColumn: ' span 2 / auto' }}
         autoComplete="off"

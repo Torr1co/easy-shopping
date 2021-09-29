@@ -1,5 +1,6 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { Table, Input, Button, Popconfirm, Form } from "antd";
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { Table, Input, Button, Popconfirm, Form } from 'antd';
+
 const EditableContext = React.createContext(null);
 
 const EditableRow = ({ index, ...props }) => {
@@ -44,7 +45,7 @@ const EditableCell = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log("Save failed:", errInfo);
+      console.log('Save failed:', errInfo);
     }
   };
 
@@ -82,14 +83,12 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-class Shop extends React.Component {
+class ShopTable extends React.Component {
   constructor(props) {
     super(props);
 
     const firstDataSource = [];
-    /*for (let i = 0; i <= 1; i++) {
-      firstDataSource.push( */
-
+    // reduce la data para las columnas
     for (let i = 0; i < 2; i++) {
       firstDataSource.push({
         ...this.props.selectedShop
@@ -99,32 +98,21 @@ class Shop extends React.Component {
       });
     }
     console.log(firstDataSource);
-    /*           .filter((title) => title !== "editable")
-          .map((title) => {
-            console.log(`iterando ${i} ${title}`);
-            const obj = {};
-            obj[title] = `info ${i}`;
-            return obj;
-          }) */
-
-    // console.log(firstDataSource);
 
     this.columns = [
       ...props.selectedShop,
       {
-        title: "operation",
-        dataIndex: "operation",
+        title: 'operation',
+        dataIndex: 'operation',
         render: (_, record) =>
           this.state.dataSource.length >= 1 ? (
-            <Popconfirm
-              title="Seguro de eliminar?"
-              onConfirm={() => this.handleDelete(record.key)}
-            >
-              <a href="#">Eliminar</a>
+            <Popconfirm title="Seguro de eliminar?" onConfirm={() => this.handleDelete(record.key)}>
+              <Button type="link">Eliminar</Button>
             </Popconfirm>
           ) : null,
       },
     ];
+    console.log(this.columns);
     this.state = {
       dataSource: firstDataSource,
 
@@ -189,6 +177,8 @@ class Shop extends React.Component {
     });
     return (
       <div>
+        <h1 style={{ textAlign: 'center' }}>{this.props.shopName}</h1>
+
         <Button
           onClick={this.handleAdd}
           type="primary"
@@ -198,16 +188,30 @@ class Shop extends React.Component {
         >
           Añade una fila
         </Button>
-        <Table
-          components={components}
-          rowClassName={() => "editable-row"}
-          bordered
-          dataSource={dataSource}
-          columns={columns}
-        />
+
+        {[...Array(7)].map((_, i) => (
+          <Table
+            components={components}
+            rowClassName={() => 'editable-row'}
+            bordered
+            dataSource={dataSource}
+            // columns={[{ title: 'bueno', childen: [...columns] }]}
+            columns={[
+              {
+                title: i + 1,
+                children: [...columns],
+              },
+            ]}
+            pagination={{ position: ['none', 'none'] }}
+            key={i}
+            onClick={(e) => {
+              console.log(e);
+            }}
+          />
+        ))}
       </div>
     );
   }
 }
 
-export default Shop;
+export default ShopTable;

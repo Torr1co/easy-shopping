@@ -1,5 +1,5 @@
 /// ///////////////////////////////////////FIREBASE
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
@@ -18,8 +18,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.less';
 import './App.css';
 import Home from './components/Home';
-import Shop from './components/Shop';
-
+import ShopTable from './components/ShopTable';
 /// ///////////////////////////////////////COMPONENTS
 
 const firebaseConfig = {
@@ -38,7 +37,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 
 /// /////////////// APP
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 function App() {
   const [user, loading, error] = useAuthState(auth);
   const [selectedDate, setSelectedDate] = useState(false);
@@ -62,16 +61,14 @@ function App() {
       <Router>
         {/* ------- lo hace español */}
         <Layout>
-          <Header>
-            <nav>
-              <p className="welcome">Inicia sesion para comenzar</p>
-              {/* <img src="#" alt="Logo" className="logo" /> */}
-              <Button type="primary" size="large">
-                Comenzar
-              </Button>
-              {/* &rarr; */}
-            </nav>
-          </Header>
+          <nav>
+            <p className="welcome">Inicia sesion para comenzar</p>
+            {/* <img src="#" alt="Logo" className="logo" /> */}
+            <Button type="primary" size="large">
+              Comenzar
+            </Button>
+            {/* &rarr; */}
+          </nav>
 
           <Content className="content">
             <Switch>
@@ -84,7 +81,11 @@ function App() {
                 />
               </Route>
               <Route path="/shop">
-                <Shop selectedDate={selectedDate} selectedShop={shopSketches[selectedShop]} />
+                <ShopTable
+                  selectedDate={selectedDate}
+                  selectedShop={shopSketches[selectedShop]}
+                  shopName={selectedShop}
+                />
               </Route>
             </Switch>
           </Content>
