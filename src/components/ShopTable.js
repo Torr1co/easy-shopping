@@ -26,6 +26,7 @@ const EditableCell = ({
   const [editing, setEditing] = useState(false);
   const inputRef = useRef(null);
   const form = useContext(EditableContext);
+
   useEffect(() => {
     if (editing) {
       inputRef.current.focus();
@@ -87,8 +88,8 @@ class ShopTable extends React.Component {
   constructor(props) {
     super(props);
 
-    const firstDataSource = [];
-    // reduce la data para las columnas
+    //a eliminar
+    /* const firstDataSource = [];
     for (let i = 0; i < 2; i++) {
       firstDataSource.push({
         ...this.props.selectedShop
@@ -97,12 +98,12 @@ class ShopTable extends React.Component {
         key: i,
       });
     }
-    console.log(firstDataSource);
+    console.log(firstDataSource); */
 
     this.columns = [
       ...props.selectedShop,
       {
-        title: 'operation',
+        title: 'operacion',
         dataIndex: 'operation',
         render: (_, record) =>
           this.state.dataSource.length >= 1 ? (
@@ -113,8 +114,9 @@ class ShopTable extends React.Component {
       },
     ];
     console.log(this.columns);
+
     this.state = {
-      dataSource: firstDataSource,
+      dataSource: this.props.dataSource,
 
       count: 2,
     };
@@ -159,6 +161,7 @@ class ShopTable extends React.Component {
         cell: EditableCell,
       },
     };
+    console.log('col:', this.columns);
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -175,11 +178,10 @@ class ShopTable extends React.Component {
         }),
       };
     });
+
     return (
       <div>
-        <h1 style={{ textAlign: 'center' }}>{this.props.shopName}</h1>
-
-        <Button
+        {/* <Button
           onClick={this.handleAdd}
           type="primary"
           style={{
@@ -187,28 +189,24 @@ class ShopTable extends React.Component {
           }}
         >
           Añade una fila
-        </Button>
+        </Button> */}
 
-        {[...Array(7)].map((_, i) => (
-          <Table
-            components={components}
-            rowClassName={() => 'editable-row'}
-            bordered
-            dataSource={dataSource}
-            // columns={[{ title: 'bueno', childen: [...columns] }]}
-            columns={[
+        <Table
+          components={components}
+          rowClassName={() => 'editable-row'}
+          bordered
+          dataSource={dataSource}
+          columns={[{ title: 'Lunes', children: [...columns] }]}
+          /* columns={[
               {
                 title: i + 1,
+                dataIndex: i,
                 children: [...columns],
               },
-            ]}
-            pagination={{ position: ['none', 'none'] }}
-            key={i}
-            onClick={(e) => {
-              console.log(e);
-            }}
-          />
-        ))}
+            ]} */
+          // pagination={{ position: ['none', 'none'] }}
+          // key={i}
+        />
       </div>
     );
   }

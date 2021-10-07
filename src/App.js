@@ -18,7 +18,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.less';
 import './App.css';
 import Home from './components/Home';
-import ShopTable from './components/ShopTable';
+import ShopComplete from './components/ShopComplete';
 /// ///////////////////////////////////////COMPONENTS
 
 const firebaseConfig = {
@@ -81,7 +81,7 @@ function App() {
                 />
               </Route>
               <Route path="/shop">
-                <ShopTable
+                <ShopComplete
                   selectedDate={selectedDate}
                   selectedShop={shopSketches[selectedShop]}
                   shopName={selectedShop}
