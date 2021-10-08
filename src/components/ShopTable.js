@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Table, Input, Button, Popconfirm, Form } from 'antd';
 
 const EditableContext = React.createContext(null);
-
+const days = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
 const EditableRow = ({ index, ...props }) => {
   const [form] = Form.useForm();
   return (
@@ -62,7 +62,7 @@ const EditableCell = ({
         rules={[
           {
             required: true,
-            message: `${title} is required.`,
+            message: `${title} es requerido.`,
           },
         ]}
       >
@@ -113,7 +113,7 @@ class ShopTable extends React.Component {
           ) : null,
       },
     ];
-    console.log(this.columns);
+    // console.log(this.columns);
 
     this.state = {
       dataSource: this.props.dataSource,
@@ -161,7 +161,7 @@ class ShopTable extends React.Component {
         cell: EditableCell,
       },
     };
-    console.log('col:', this.columns);
+    // console.log('col:', this.columns);
     const columns = this.columns.map((col) => {
       if (!col.editable) {
         return col;
@@ -178,7 +178,6 @@ class ShopTable extends React.Component {
         }),
       };
     });
-
     return (
       <div>
         {/* <Button
@@ -196,7 +195,7 @@ class ShopTable extends React.Component {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={dataSource}
-          columns={[{ title: 'Lunes', children: [...columns] }]}
+          columns={[{ title: days[this.props.index], children: [...columns] }]}
           /* columns={[
               {
                 title: i + 1,

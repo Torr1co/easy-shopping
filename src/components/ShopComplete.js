@@ -1,5 +1,5 @@
 import ShopTable from './ShopTable';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ShopComplete = ({ selectedShop, selectedDate, shopName }) => {
   // OBTENER DIAS DE LA SEMANA
@@ -12,17 +12,25 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName }) => {
   );
 
   // OBTENER DATA PARA LA TABLA
-  const [tableDataSource, setTableDataSource] = useState(
-    [...Array(2)].map((_, i) => {
-      return {
-        ...selectedShop
-          .map((obj) => obj.dataIndex)
-          .reduce((a, v) => ({ ...a, [v]: `data ${i}` }), {}),
-        key: i,
-      };
-    }),
+  // Tabledata = [dayKey:[data] * 7 dias de la semana]
+  const [weekDataSource, setWeekDataSource] = useState(
+    weekKeys.reduce((prev, dayKey) => {
+      const auxObj = {};
+      auxObj[dayKey] = [...Array(3)].map((_, i) => {
+        return {
+          ...selectedShop
+            .map((obj) => obj.dataIndex)
+            .reduce((a, v) => ({ ...a, [v]: `data ${i}` }), {}),
+          key: i,
+        };
+      });
+      return Object.assign(prev, auxObj);
+    }, {}),
   );
-
+  // console.log(weekDataSource);
+  useEffect(() => {
+    console.log(weekDataSource);
+  }, [weekDataSource]);
   return (
     <div>
       <h1 style={{ textAlign: 'center' }}>{shopName}</h1>
@@ -35,11 +43,15 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName }) => {
       >
         Añade una fila
       </Button> */}
-      <ShopTable
-        selectedShop={selectedShop}
-        dataSource={tableDataSource}
-        setDataSource={setTableDataSource}
-      />
+      {weekKeys.map((dayKey, i) => (
+        <ShopTable
+          selectedShop={selectedShop}
+          dataSource={weekDataSource[dayKey]}
+          setDataSource={setWeekDataSource}
+          dayKey={dayKey}
+          index={i}
+        />
+      ))}
     </div>
   );
 };
