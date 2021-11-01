@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Table, Input, Button, Popconfirm, Form } from 'antd';
-
 const EditableContext = React.createContext(null);
 const days = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+
 const EditableRow = ({ index, ...props }) => {
   const [form] = Form.useForm();
   return (
@@ -46,7 +46,7 @@ const EditableCell = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log('Save failed:', errInfo);
+      console.log('Error al guardar:', errInfo);
     }
   };
 
@@ -84,131 +84,152 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-class ShopTable extends React.Component {
-  constructor(props) {
-    super(props);
+const ShopTable = ({
+  selectedShop,
+  weekDataSource,
+  setWeekDataSource,
+  monthDataSource,
+  setMonthDataSource,
+  dayKey,
+  index,
+}) => {
+  const [count, setCount] = useState(3);
 
-    //a eliminar
-    /* const firstDataSource = [];
-    for (let i = 0; i < 2; i++) {
-      firstDataSource.push({
-        ...this.props.selectedShop
-          .map((o) => o.dataIndex)
-          .reduce((a, v) => ({ ...a, [v]: `data ${i}` }), {}),
-        key: i,
-      });
-    }
-    console.log(firstDataSource); */
-
-    this.columns = [
-      ...props.selectedShop,
-      {
-        title: 'operacion',
-        dataIndex: 'operation',
-        render: (_, record) =>
-          this.state.dataSource.length >= 1 ? (
-            <Popconfirm title="Seguro de eliminar?" onConfirm={() => this.handleDelete(record.key)}>
-              <Button type="link">Eliminar</Button>
-            </Popconfirm>
-          ) : null,
-      },
-    ];
-    // console.log(this.columns);
-
-    this.state = {
-      dataSource: this.props.dataSource,
-
-      count: 2,
-    };
-  }
-
-  handleDelete = (key) => {
-    console.log(key);
-    const dataSource = [...this.state.dataSource];
-    this.setState({
-      dataSource: dataSource.filter((item) => item.key !== key),
+  const updateWeekDataSource = (newValue) => {
+    setWeekDataSource({
+      ...weekDataSource,
+      [dayKey]: newValue,
     });
   };
-  handleAdd = () => {
-    const { count, dataSource } = this.state;
+
+  let columns = [
+    ...selectedShop,
+    {
+      title: 'operacion',
+      dataIndex: 'operation',
+      render: (_, record) =>
+        weekDataSource[dayKey].length >= 1 ? (
+          <Popconfirm title="Seguro de eliminar?" onConfirm={() => handleDelete(record.key)}>
+            <Button type="link">Eliminar</Button>
+          </Popconfirm>
+        ) : null,
+    },
+  ];
+  // console.log(this.columns);
+
+  const handleDelete = (key) => {
+    console.log(key);
+    updateWeekDataSource(weekDataSource[dayKey].filter((item) => item.key !== key));
+  };
+
+  const handleAdd = () => {
     const newData = {
-      ...this.props.selectedShop
-        .map((o) => o.dataIndex)
-        .reduce((a, v) => ({ ...a, [v]: `data ${this.state.count}` }), {}),
+      ...selectedShop.map((o) => o.dataIndex).reduce((a, v) => ({ ...a, [v]: 0 }), {}),
       key: count,
     };
+    setCount(count + 1);
+    updateWeekDataSource([...weekDataSource[dayKey], newData]);
 
-    this.setState({
+    /* this.setState({
       dataSource: [...dataSource, newData],
       count: count + 1,
-    });
+    }); */
   };
-  handleSave = (row) => {
-    const newData = [...this.state.dataSource];
+  const handleSave = (row) => {
+    const newData = [...weekDataSource[dayKey]];
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    this.setState({
-      dataSource: newData,
-    });
+    updateWeekDataSource(newData);
   };
 
-  render() {
-    const { dataSource } = this.state;
-    const components = {
-      body: {
-        row: EditableRow,
-        cell: EditableCell,
-      },
+  const components = {
+    body: {
+      row: EditableRow,
+      cell: EditableCell,
+    },
+  };
+
+  columns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        editable: col.editable,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        handleSave: handleSave,
+      }),
     };
-    // console.log('col:', this.columns);
-    const columns = this.columns.map((col) => {
-      if (!col.editable) {
-        return col;
-      }
+  });
 
-      return {
-        ...col,
-        onCell: (record) => ({
-          record,
-          editable: col.editable,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          handleSave: this.handleSave,
-        }),
-      };
-    });
-    return (
-      <div>
-        {/* <Button
-          onClick={this.handleAdd}
-          type="primary"
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          Añade una fila
-        </Button> */}
+  return (
+    <div>
+      <Button
+        onClick={handleAdd}
+        type="primary"
+        style={{
+          marginBottom: 16,
+        }}
+      >
+        Añade una fila
+      </Button>
+      <Table
+        components={components}
+        rowClassName={() => 'editable-row'}
+        bordered
+        dataSource={weekDataSource[dayKey]}
+        columns={[{ title: `${days[index]}  ${dayKey.slice(5)}`, children: [...columns] }]}
+        pagination={{ position: ['none', 'none'] }}
+        // key={i}
+        style={{ border: '2px #d9d9d9 solid', marginBottom: '32px' }}
+        summary={(pageData) => {
+          //obtener Balance para cada uno
+          let balance = 0;
+          /* dayKey.slice(0, 7);//mes
+          dayKey.slice(-2);//dia-1 por indice de array */
+          const monthIndex = dayKey.slice(0, 7);
+          const dayIndex = +dayKey.slice(-2) - 1;
+          pageData.forEach((e) => {
+            for (const [key, value] of Object.entries(e)) {
+              if (!isNaN(value) && key !== 'key') {
+                balance += +value;
+              }
+            }
+          });
 
-        <Table
-          components={components}
-          rowClassName={() => 'editable-row'}
-          bordered
-          dataSource={dataSource}
-          columns={[{ title: days[this.props.index], children: [...columns] }]}
-          /* columns={[
-              {
-                title: i + 1,
-                dataIndex: i,
-                children: [...columns],
-              },
-            ]} */
-          // pagination={{ position: ['none', 'none'] }}
-          // key={i}
-        />
-      </div>
-    );
-  }
-}
+          if (!monthDataSource[monthIndex]) {
+            /* const newMonth = new Date(dayKey).toJSON().slice(0, 7);
+            const objAux = {};
+            objAux[newMonth] = [...Array(31)].fill(0);
+            console.log(objAux); */
+            //creates new object
+            console.log('xd');
+          } else if (monthDataSource[monthIndex][dayIndex] !== balance) {
+            console.log('xd2');
+            setMonthDataSource((prevState) => {
+              const monthData = { ...prevState }; // crear copia de monthData
+              monthData[monthIndex][dayIndex] = balance; // actualizar data
+              return monthData;
+            });
+          }
+
+          return (
+            <>
+              <Table.Summary.Row>
+                <Table.Summary.Cell colSpan={2}>{balance}</Table.Summary.Cell>
+                <Table.Summary.Cell>Balance</Table.Summary.Cell>
+              </Table.Summary.Row>
+            </>
+          );
+        }}
+      />
+    </div>
+  );
+};
 
 export default ShopTable;

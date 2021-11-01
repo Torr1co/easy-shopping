@@ -1,7 +1,9 @@
-import React, { Form, Input, Button /*  Table  */ } from 'antd';
+import React, { Form, Input, Button, Modal /*  Table  */ } from 'antd';
+import { uploadShopData } from '../firebase-config';
 // import { useState } from "react";
 
-const ShopForm = ({ open, setOpen, addShopName, addShopSketch }) => {
+const ShopForm = ({ open, setOpen, addShopName, addShopSketch, shopNames }) => {
+  const [form] = Form.useForm();
   // const [value, setValue] = useState("");
   if (!open) return null;
 
@@ -60,9 +62,12 @@ const ShopForm = ({ open, setOpen, addShopName, addShopSketch }) => {
       return obj;
     });
 
-    addShopName(shopName);
-    addShopSketch(shopSketch);
-    console.log('obj: ', shopSketch);
+    uploadShopData(shopName, shopSketch).then(() => {
+      addShopName(shopName);
+      addShopSketch(shopSketch);
+      console.log('obj: ', shopSketch);
+      console.log('sn:', shopName);
+    });
   };
 
   /* const isNum = (e) => {
@@ -73,28 +78,35 @@ const ShopForm = ({ open, setOpen, addShopName, addShopSketch }) => {
   }; */
 
   return (
-    <div className="add-shop-window window">
-      <div className="add-shop__close" onClick={() => setOpen(false)}>
-        &#10005;
-      </div>
-      <div className="add-shop__content">
-        <h1>Creador de plantilla para su negocio</h1>
-        <p>
-          Es momento de crear su plantilla, para cada día de la semana se creara una tabla a
-          completar con la siguiente información. Por favor complete de acuerdo a las necesidades de
-          su negocio, pues estos titulos no son editables
-        </p>
-      </div>
+    <Modal
+      style={{ padding: '1rem 2rem' }}
+      title="Creador de plantilla para su negocio"
+      width={1000}
+      visible={open}
+      okText="Cargar plantilla"
+      onOk={() => {
+        form
+          .validateFields()
+          .then((...values) => {
+            form.resetFields();
+            onFinish(...values);
+          })
+          .catch((info) => {
+            console.log('Validate Failed:', info);
+          });
+      }}
+      onCancel={() => setOpen(false)}
+    >
+      <p style={{ marginBottom: '30px' }}>
+        Es momento de crear su plantilla, para cada día de la semana se creara una tabla a completar
+        con la siguiente información. Por favor complete de acuerdo a las necesidades de su negocio,
+        pues estos titulos no son editables
+      </p>
 
       <Form
+        form={form}
         name="dynamic_form_item"
         {...formItemLayoutWithOutLabel}
-        onFinish={(...values) => {
-          onFinish(...values);
-          setTimeout(() => {
-            setOpen(false);
-          }, 1000);
-        }}
         style={{ gridColumn: ' span 2 / auto' }}
         autoComplete="off"
       >
@@ -102,7 +114,17 @@ const ShopForm = ({ open, setOpen, addShopName, addShopSketch }) => {
           {...formItemLayout}
           name="shopName"
           label="Nombre del negocio"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true },
+            ({ getFieldValue }) => ({
+              validator(_, shopName) {
+                console.log(shopName);
+                if (shopNames.includes(shopName.toLowerCase()))
+                  return Promise.reject(new Error('Ya existe una plantilla con ese nombre!'));
+                return Promise.resolve();
+              },
+            }),
+          ]}
         >
           <Input />
         </Form.Item>
@@ -182,15 +204,9 @@ const ShopForm = ({ open, setOpen, addShopName, addShopSketch }) => {
             </>
           )}
         </Form.List>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Cargar Plantilla
-          </Button>
-        </Form.Item>
       </Form>
       {/* <Table dataSource={dataSource} columns={columns} />; */}
-    </div>
+    </Modal>
   );
 };
 

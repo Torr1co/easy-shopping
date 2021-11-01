@@ -10,7 +10,7 @@ html {
 }
 
 body {
-  font-family: "Nunito", sans-serif;
+  font-family: 'Nunito', sans-serif;
   color: #6d5d4b;
   font-weight: 300;
   line-height: 1.6;
@@ -38,7 +38,7 @@ nav > p {
 }
 
 .logo {
-  height: 5.25rem;
+  height: 7.25rem;
 }
 
 .login {
@@ -64,6 +64,9 @@ nav > p {
   background-color: #b28451;
   cursor: pointer;
 }
+/*                        */
+/*      REUSABLE          */
+/*                        */
 
 /*                        */
 /*       CONTENT          */
