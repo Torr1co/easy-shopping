@@ -60,8 +60,7 @@ export const getDayData = async (dayID) => {
   const daysRef = doc(SELECTED_SHOP_REF, 'days', dayID);
   const daysSnap = await getDoc(daysRef);
   if (daysSnap.exists()) {
-    const response = daysSnap.data().weekTableData;
-    return response;
+    return daysSnap.data().weekTableData;
   }
 };
 
@@ -70,7 +69,7 @@ export const getMonthData = async (monthID) => {
   const monthRef = doc(SELECTED_SHOP_REF, 'months', monthID);
   const monthsSnap = await getDoc(monthRef);
   if (monthsSnap.exists()) {
-    return monthsSnap.data();
+    return monthsSnap.data().monthChartData;
   } else {
     console.log('there isnt month data');
   }
@@ -90,13 +89,12 @@ export const uploadShopData = async (shopName, shopSketch) => {
 export const uploadDayData = async (dayID, dayData) => {
   console.log('uploading day data...');
   const daysRef = doc(SELECTED_SHOP_REF, 'days', dayID);
-  console.log('shopref: ', SELECTED_SHOP_REF);
   await setDoc(daysRef, dayData);
 };
 
 export const uploadMonthData = async (monthID, monthData) => {
   console.log('uploading month data...');
-  const monthRef = doc(USER_REF, 'months', monthID);
+  const monthRef = doc(SELECTED_SHOP_REF, 'months', monthID);
   await setDoc(monthRef, monthData);
   //await setDoc(USER_REF, { monthID: monthData });
 };

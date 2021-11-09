@@ -30,33 +30,6 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
     }, {}),
   );
 
-  useEffect(() => {
-    if (user) {
-      (async () => {
-        console.log(weekKeys.slice(1));
-        const response = await getDayData(weekKeys[0]);
-        if (response) {
-          console.log('res: ', response);
-          const newData = {};
-          newData[weekKeys[0]] = response;
-
-          await weekKeys.slice(1).reduce(async (prev, dayKey) => {
-            await prev;
-            const auxObj = {};
-            const data = await getDayData(dayKey);
-            auxObj[dayKey] = data;
-            Object.assign(newData, auxObj);
-            return Promise.resolve();
-          }, Promise.resolve());
-
-          console.log(weekDataSource);
-          setWeekDataSource(newData);
-          console.log('fin');
-        }
-      })();
-    }
-  }, [user]);
-
   //poner el mes seleccionado (chequeanado el primer dia de la semana con el ultimo)
   const selectedMonth =
     weekKeys[0] !== weekKeys[weekKeys.length - 1]
@@ -64,16 +37,38 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
       : weekKeys[0].slice(0, 7);
 
   //obtener mes para los graficos-> {fecha: [0, 0...0]}
-  const [monthDataSource, setMonthDataSource] = useState(() => {
-    const objAux = {};
-    objAux[selectedMonth] = [...Array(31)].fill(0);
-    return objAux;
-  });
+  const [monthDataSource, setMonthDataSource] = useState(() => [...Array(31)].fill(0));
 
-  // ver si cambian los datos desde shopTable
-  /* useEffect(() => {
-    // console.log(weekDataSource);
-  }, [weekDataSource]); */
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        //obtiene la data del mes
+        const fetchedMonthData = await getMonthData(selectedMonth);
+        if (fetchedMonthData) setMonthDataSource(fetchedMonthData);
+
+        //prueba obtener data del primer dia de la semana
+        const response = await getDayData(weekKeys[0]);
+        if (response) {
+          const fetchedDayData = {};
+          //primer día en la data traída
+          fetchedDayData[weekKeys[0]] = response;
+
+          await weekKeys.slice(1).reduce(async (prev, dayKey) => {
+            await prev;
+            const auxObj = {};
+            const data = await getDayData(dayKey);
+            auxObj[dayKey] = data;
+            Object.assign(fetchedDayData, auxObj);
+            return Promise.resolve();
+          }, Promise.resolve());
+          setWeekDataSource(fetchedDayData);
+        }
+        // const newMonthData = weekKeys[0] !== weekKeys[weekKeys.length - 1] ?
+        //    await getMonthData()
+      })();
+    }
+  }, [user]);
+
   return (
     <div>
       <PageHeader
@@ -87,7 +82,7 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
           </Link>
         }
         onBack={() => <Link to="/" />}
-        title="Informacion Semanal"
+        title="Inicio"
         style={{ padding: '0 0 24px 0', margin: '-30px 0 0 0' }}
         extra={[
           <Link to="/shop/weekInfo">
@@ -119,7 +114,7 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
         </Route>
 
         <Route exact path="/shop/charts">
-          <ShopChart monthData={monthDataSource[selectedMonth]} selectedMonth={selectedMonth} />
+          <ShopChart monthData={monthDataSource} selectedMonth={selectedMonth} />
         </Route>
       </Switch>
       <Button
@@ -130,6 +125,7 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
           for (const [key, value] of Object.entries(weekDataSource)) {
             uploadDayData(key, { weekTableData: value });
           }
+          uploadMonthData(selectedMonth, { monthChartData: monthDataSource });
         }}
       >
         Guardar cambios

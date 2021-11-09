@@ -75,7 +75,6 @@ function App() {
   };
 
   const PrivateRoute = ({ children, ...rest }) => {
-    console.log(user);
     return (
       <Route
         {...rest}

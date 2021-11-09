@@ -118,7 +118,6 @@ const ShopTable = ({
   // console.log(this.columns);
 
   const handleDelete = (key) => {
-    console.log(key);
     updateWeekDataSource(weekDataSource[dayKey].filter((item) => item.key !== key));
   };
 
@@ -202,18 +201,10 @@ const ShopTable = ({
             }
           });
 
-          if (!monthDataSource[monthIndex]) {
-            /* const newMonth = new Date(dayKey).toJSON().slice(0, 7);
-            const objAux = {};
-            objAux[newMonth] = [...Array(31)].fill(0);
-            console.log(objAux); */
-            //creates new object
-            console.log('xd');
-          } else if (monthDataSource[monthIndex][dayIndex] !== balance) {
-            console.log('xd2');
+          if (monthDataSource[dayIndex] !== balance) {
             setMonthDataSource((prevState) => {
               const monthData = { ...prevState }; // crear copia de monthData
-              monthData[monthIndex][dayIndex] = balance; // actualizar data
+              monthData[dayIndex] = balance; // actualizar data
               return monthData;
             });
           }

@@ -10,6 +10,7 @@ const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch,
   //boolean para modal y para los nombres de los negocios
   const [IsOpen, setIsOpen] = useState(false);
   const [shopNames, setShopNames] = useState([]);
+  const [deleteShop, setDeleteShop] = useState(false);
 
   const addShopName = (shopName) => {
     setShopNames([...shopNames, shopName]);
@@ -17,7 +18,6 @@ const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch,
 
   useEffect(() => {
     if (user) {
-      console.log(user);
       checkUser(user.uid);
       getShopData(setShopNames, addShopSketch);
     }
@@ -44,6 +44,12 @@ const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch,
       <Space className="space">
         <DatePicker picker="week" onChange={datePicked} />
         <DatePicker picker="month" disabled />
+        <Button danger onClick={() => setDeleteShop(!deleteShop)}>
+          <ion-icon
+            style={{ color: 'red', fontSize: '18px' }}
+            name={deleteShop ? 'close-outline' : 'trash-outline'}
+          ></ion-icon>
+        </Button>
       </Space>
 
       {/* ---------------CONTENIDO -------------*/}
@@ -74,15 +80,22 @@ const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch,
             shopNames={shopNames}
           />
         </Radio.Group>
-        <Link to="/shop/weekinfo">
-          <Button
-            type="primary"
-            style={{ float: 'right' }}
-            disabled={`${continueButton ? '' : 'disabled'}`}
-          >
-            Continuar
+
+        {deleteShop ? (
+          <Button style={{ marginTop: '32px' }} type="primary" danger>
+            Eliminar
           </Button>
-        </Link>
+        ) : (
+          <Link to="/shop/weekinfo">
+            <Button
+              type="primary"
+              style={{ marginTop: '32px' }}
+              disabled={`${continueButton ? '' : 'disabled'}`}
+            >
+              Continuar
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   ) : (
