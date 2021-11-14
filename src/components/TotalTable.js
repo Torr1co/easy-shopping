@@ -47,7 +47,7 @@ const TotalTable = ({ dataSource, weekKeys, selectedShop }) => {
         return (
           <>
             <Table.Summary.Row>
-              <Table.Summary.Cell colSpan={2}>{Balance}</Table.Summary.Cell>
+              <Table.Summary.Cell colSpan={totalColumns.length - 1}>{Balance}</Table.Summary.Cell>
               <Table.Summary.Cell>Balance</Table.Summary.Cell>
             </Table.Summary.Row>
           </>

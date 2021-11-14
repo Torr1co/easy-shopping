@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 /// ///////////////////////////////////////Firebase
-import { GooglePopup, auth, checkUser, getShopNames } from './firebase-config';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { GooglePopup, auth } from './firebase-config';
 import { signOut } from '@firebase/auth';
 /// ///////////////////////////////////////
-import { ConfigProvider, Layout, Button } from 'antd';
+import { ConfigProvider, Layout, Button, message } from 'antd';
 import 'antd/dist/antd.less';
 
 import 'moment/locale/es-us';
@@ -18,6 +17,7 @@ import './App.css';
 import Home from './components/Home';
 import ShopComplete from './components/ShopComplete';
 import logo from './img/shop__logo.jpg';
+
 /// ///////////////////////////////////////COMPONENTS
 
 // setPersistence(auth, browserSessionPersistence);
@@ -27,7 +27,8 @@ import logo from './img/shop__logo.jpg';
 const { Content, Footer } = Layout;
 
 function App() {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState('');
   const [selectedDate, setSelectedDate] = useState(false);
   const [selectedShop, setSelectedShop] = useState(false);
   const [shopSketches, setShopSketch] = useState({});
@@ -36,6 +37,15 @@ function App() {
     setShopSketch(Object.assign(shopSketches, shopSketch));
   };
 
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+    return () => {
+      setError('');
+    };
+  }, [error]);
+
   moment.locale('es-us', {
     week: {
       dow: 1,
@@ -43,13 +53,6 @@ function App() {
   });
 
   const WelcomeMessage = () => {
-    if (error) {
-      return (
-        <div>
-          <p>Error: {error}</p>
-        </div>
-      );
-    }
     if (user) {
       return (
         <nav>
@@ -60,18 +63,18 @@ function App() {
           </Button>
         </nav>
       );
-    } else {
-      return (
-        <nav>
-          <p className="welcome">Inicia sesion para comenzar</p>
-          <img src={logo} alt="Logo" className="logo" />
-          <Button type="primary" size="large" onClick={() => GooglePopup()}>
-            Comenzar
-          </Button>
-          {/*  */}
-        </nav>
-      );
     }
+
+    return (
+      <nav>
+        <p className="welcome">Inicia sesion para comenzar</p>
+        <img src={logo} alt="Logo" className="logo" />
+        <Button type="primary" size="large" onClick={() => GooglePopup(setUser, setError)}>
+          Comenzar
+        </Button>
+        {/*  */}
+      </nav>
+    );
   };
 
   const PrivateRoute = ({ children, ...rest }) => {
@@ -98,7 +101,7 @@ function App() {
     <ConfigProvider locale={locale}>
       <Router>
         {/* ------- lo hace español */}
-        <Layout>
+        <Layout style={{ minHeight: '100vh' }}>
           <WelcomeMessage />
 
           <Content className="content">
@@ -106,6 +109,7 @@ function App() {
               <Route exact path="/">
                 <Home
                   user={user}
+                  selectedShop={selectedShop}
                   setSelectedShop={setSelectedShop}
                   setSelectedDate={setSelectedDate}
                   continueButton={Boolean(selectedDate && selectedShop)}

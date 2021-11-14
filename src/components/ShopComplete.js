@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { PageHeader, Button } from 'antd';
-import { Link, Switch, Route } from 'react-router-dom';
+import { PageHeader, Button, message } from 'antd';
+import { Link, Switch, Route, useLocation } from 'react-router-dom';
 /////////////////////////////////7
 import ShopTable from './ShopTable';
 import TotalTable from './TotalTable';
@@ -8,6 +8,10 @@ import ShopChart from './ShopChart';
 import { getDayData, getMonthData, uploadDayData, uploadMonthData } from '../firebase-config';
 
 const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
+  //locaciones
+  const pathTable = '/shop/weekInfo';
+  const pathChart = '/shop/charts';
+
   // OBTENER DIAS DE LA SEMANA
   const weekKeys = [...Array(7)].map((_, i) => {
     const dayAux = new Date(selectedDate);
@@ -41,6 +45,7 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
 
   useEffect(() => {
     if (user) {
+      message.loading('verificando data del negocio...');
       (async () => {
         //obtiene la data del mes
         const fetchedMonthData = await getMonthData(selectedMonth);
@@ -53,6 +58,7 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
           //primer día en la data traída
           fetchedDayData[weekKeys[0]] = response;
 
+          //esperar que la data traída del día anterior termine para traer la del siguiente
           await weekKeys.slice(1).reduce(async (prev, dayKey) => {
             await prev;
             const auxObj = {};
@@ -65,12 +71,15 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
         }
         // const newMonthData = weekKeys[0] !== weekKeys[weekKeys.length - 1] ?
         //    await getMonthData()
-      })();
+      })()
+        .then(() => message.success('data conectada con exito'))
+        .catch((error) => message.error(error));
     }
   }, [user]);
 
-  return (
-    <div>
+  const ShopNav = () => {
+    let location = useLocation().pathname;
+    return (
       <PageHeader
         className="site-page-header"
         backIcon={
@@ -85,16 +94,21 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
         title="Inicio"
         style={{ padding: '0 0 24px 0', margin: '-30px 0 0 0' }}
         extra={[
-          <Link to="/shop/weekInfo">
-            <Button type="primary">Tabla</Button>
+          <Link to={pathTable} key="0">
+            <Button type={location === pathTable ? 'primary' : ''}>Tabla</Button>
           </Link>,
-          <Link to="/shop/charts">
-            <Button>Graficos</Button>
+          <Link to={pathChart} key="1">
+            <Button type={location === pathChart ? 'primary' : ''}>Graficos</Button>
           </Link>,
         ]}
       />
+    );
+  };
+  return (
+    <div>
+      <ShopNav />
       <Switch>
-        <Route exact path="/shop/weekInfo">
+        <Route exact path={pathTable}>
           <h1 style={{ textAlign: 'center' }}>{shopName}</h1>
 
           {weekKeys.map((dayKey, i) => (
@@ -113,19 +127,25 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
           <TotalTable dataSource={weekDataSource} weekKeys={weekKeys} selectedShop={selectedShop} />
         </Route>
 
-        <Route exact path="/shop/charts">
+        <Route exact path={pathChart}>
           <ShopChart monthData={monthDataSource} selectedMonth={selectedMonth} />
         </Route>
       </Switch>
       <Button
         type="primary"
+        size="large"
         style={{ marginTop: '32px', float: 'right' }}
         onClick={() => {
+          message.loading('subiendo la data...');
           // SUBIR LA DATA PARA CADA DIA
-          for (const [key, value] of Object.entries(weekDataSource)) {
-            uploadDayData(key, { weekTableData: value });
-          }
-          uploadMonthData(selectedMonth, { monthChartData: monthDataSource });
+          (async () => {
+            for (const [key, value] of Object.entries(weekDataSource)) {
+              await uploadDayData(key, { weekTableData: value });
+            }
+            await uploadMonthData(selectedMonth, { monthChartData: monthDataSource });
+          })()
+            .then(() => message.success('data subida con exito'))
+            .catch((error) => message.error(error));
         }}
       >
         Guardar cambios

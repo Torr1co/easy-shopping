@@ -1,6 +1,14 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { doc, setDoc, getFirestore, getDoc, updateDoc, arrayUnion } from '@firebase/firestore';
+import {
+  doc,
+  setDoc,
+  getFirestore,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from '@firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -23,12 +31,14 @@ let SELECTED_SHOP_ID = null;
 let SELECTED_SHOP_REF = null;
 
 //
-export const GooglePopup = () => {
-  try {
-    signInWithPopup(auth, new GoogleAuthProvider());
-  } catch (err) {
-    alert(err);
-  }
+export const GooglePopup = (setUser, setError) => {
+  signInWithPopup(auth, new GoogleAuthProvider())
+    .then((result) => {
+      setUser(result.user);
+    })
+    .catch((err) => {
+      setError(err.message);
+    });
 };
 
 //AÑADIR REGISTRO E INICIO DE SESION ACORDE
@@ -94,7 +104,14 @@ export const uploadDayData = async (dayID, dayData) => {
 
 export const uploadMonthData = async (monthID, monthData) => {
   console.log('uploading month data...');
-  const monthRef = doc(SELECTED_SHOP_REF, 'months', monthID);
-  await setDoc(monthRef, monthData);
+  const monthsRef = doc(SELECTED_SHOP_REF, 'months', monthID);
+  await setDoc(monthsRef, monthData);
   //await setDoc(USER_REF, { monthID: monthData });
+};
+
+export const deleteShopName = async (shopName) => {
+  console.log('deleting shop');
+  await updateDoc(USER_REF, {
+    shopNames: arrayRemove(shopName),
+  });
 };

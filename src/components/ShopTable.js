@@ -191,7 +191,6 @@ const ShopTable = ({
           let balance = 0;
           /* dayKey.slice(0, 7);//mes
           dayKey.slice(-2);//dia-1 por indice de array */
-          const monthIndex = dayKey.slice(0, 7);
           const dayIndex = +dayKey.slice(-2) - 1;
           pageData.forEach((e) => {
             for (const [key, value] of Object.entries(e)) {
@@ -201,12 +200,11 @@ const ShopTable = ({
             }
           });
 
-          if (monthDataSource[dayIndex] !== balance) {
-            setMonthDataSource((prevState) => {
-              const monthData = { ...prevState }; // crear copia de monthData
-              monthData[dayIndex] = balance; // actualizar data
-              return monthData;
-            });
+          if (monthDataSource[+dayIndex] !== balance) {
+            console.log(dayIndex);
+            const newMonthData = monthDataSource;
+            newMonthData[+dayIndex] = balance;
+            setMonthDataSource(newMonthData);
           }
 
           return (

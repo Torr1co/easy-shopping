@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { DatePicker, Space, Button, Radio } from 'antd';
+import { DatePicker, Space, Button, Radio, Popconfirm, message } from 'antd';
 import { Link } from 'react-router-dom';
 
-import { checkUser, getShopData, initializeSelectedShop } from '../firebase-config.js';
+import {
+  checkUser,
+  getShopData,
+  initializeSelectedShop,
+  deleteShopName,
+} from '../firebase-config.js';
 import ShopSketch from './ShopSketch';
 import ShopForm from './ShopForm';
 
-const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch, user }) => {
+const Home = ({
+  selectedShop,
+  setSelectedDate,
+  setSelectedShop,
+  continueButton,
+  addShopSketch,
+  user,
+}) => {
   //boolean para modal y para los nombres de los negocios
   const [IsOpen, setIsOpen] = useState(false);
   const [shopNames, setShopNames] = useState([]);
@@ -18,8 +30,11 @@ const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch,
 
   useEffect(() => {
     if (user) {
+      message.loading('cargando data del usuario...');
       checkUser(user.uid);
-      getShopData(setShopNames, addShopSketch);
+      getShopData(setShopNames, addShopSketch)
+        .then(() => message.success('cargado con exito'))
+        .catch((error) => message.error(error));
     }
     // return () => {};
   }, [user]);
@@ -64,7 +79,12 @@ const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch,
           }}
         >
           {shopNames.map((name, index) => (
-            <ShopSketch name={name} key={index} />
+            <ShopSketch
+              name={name}
+              key={index}
+              deleteShop={deleteShop}
+              selectedShop={selectedShop}
+            />
           ))}
 
           {/* boton de modal */}
@@ -82,9 +102,28 @@ const Home = ({ setSelectedDate, setSelectedShop, continueButton, addShopSketch,
         </Radio.Group>
 
         {deleteShop ? (
-          <Button style={{ marginTop: '32px' }} type="primary" danger>
-            Eliminar
-          </Button>
+          <Popconfirm
+            title="Estas seguro que quieres eliminar la plantilla?"
+            onConfirm={() => {
+              message.loading('eliminando plantilla de negocio...');
+              deleteShopName(selectedShop)
+                .then(() => message.success('plantilla eliminada con exito'))
+                .catch((error) => {
+                  message.error(error);
+                });
+            }}
+            okText="Si"
+            cancelText="No"
+          >
+            <Button
+              style={{ marginTop: '32px' }}
+              type="primary"
+              disabled={`${selectedShop ? '' : 'disabled'}`}
+              danger
+            >
+              Eliminar
+            </Button>
+          </Popconfirm>
         ) : (
           <Link to="/shop/weekinfo">
             <Button

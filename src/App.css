@@ -97,6 +97,9 @@ nav > p {
 .shop p {
   font-size: 2rem;
 }
+.shop-delete:hover {
+  color: #ff4d4f;
+}
 .shops {
   grid-column: center-start / center-end;
   display: grid;
