@@ -75,6 +75,7 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
         .then(() => message.success('data conectada con exito'))
         .catch((error) => message.error(error));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const ShopNav = () => {

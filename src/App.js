@@ -46,7 +46,7 @@ function App() {
     };
   }, [error]);
 
-  moment.locale('es-us', {
+  moment.updateLocale('es-us', {
     week: {
       dow: 1,
     },

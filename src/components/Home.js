@@ -37,6 +37,7 @@ const Home = ({
         .catch((error) => message.error(error));
     }
     // return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   //pone el picker de la semana en lunes
