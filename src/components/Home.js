@@ -11,6 +11,16 @@ import {
 import ShopSketch from './ShopSketch';
 import ShopForm from './ShopForm';
 
+import '../style/home.css';
+
+const feature__icon = {
+  color: '#c69963',
+  width: '4.5rem',
+  height: ' 4.5rem',
+  gridRow: '1 / span 2',
+  transform: 'translateY(-1rem)',
+};
+
 const Home = ({
   selectedShop,
   setSelectedDate,
@@ -56,7 +66,7 @@ const Home = ({
 
   return user ? (
     <div>
-      <h1>Selecciona Fecha y Negocio</h1>
+      <h2>Selecciona Fecha y Negocio</h2>
       <Space className="space">
         <DatePicker picker="week" onChange={datePicked} />
         <DatePicker picker="month" disabled />
@@ -107,6 +117,7 @@ const Home = ({
             title="Estas seguro que quieres eliminar la plantilla?"
             onConfirm={() => {
               message.loading('eliminando plantilla de negocio...');
+              setShopNames(shopNames.filter((shopName) => shopName !== selectedShop));
               deleteShopName(selectedShop)
                 .then(() => message.success('plantilla eliminada con exito'))
                 .catch((error) => {
@@ -139,9 +150,54 @@ const Home = ({
       </div>
     </div>
   ) : (
-    <div>
-      <h1>Bienvenido a la primera version de Administracion de Negocio!</h1>
-    </div>
+    <section className="features">
+      <div className="feature">
+        <ion-icon name="checkmark-circle-outline" style={feature__icon}></ion-icon>
+        <h4>Obten privilegios por ser usuario primerizo!</h4>
+        <p className="feature__text">
+          Seras recompensado por encontrarte entre los nuevos usuarios de la app, desde desde
+          grandes descuentos hasta utilizar nuevas funcionalidades de primera mano.
+        </p>
+      </div>
+      <div className="feature">
+        <ion-icon name="trending-up-outline" style={feature__icon}></ion-icon>
+        <h4>Renovaciones y mejoras constantes</h4>
+        <p className="feature__text">
+          Se iran agregando y retocando caracterizticas para que nuestros consumidores tengan un
+          poco de frescura. Estas estarán basadas en estudios de datos y marketing online.
+        </p>
+      </div>
+      <div className="feature">
+        <ion-icon name="chatbubbles-outline" style={feature__icon}></ion-icon>
+        <h4>Nos importa tu opinion</h4>
+        <p className="feature__text">
+          Nos complace escuchar sus sugerencias y dudas. la aplicacion posee mantenimiento y
+          atencion al cliente las 24 horas para garantizar la satisfaccion al cliente.
+        </p>
+      </div>
+
+      <div className="feature">
+        <ion-icon name="bar-chart-outline" style={feature__icon}></ion-icon>
+        <h4>Graficas de acuerdo a tus necesidades</h4>
+        <p className="feature__text">Graficas basadas en temporalidades</p>
+      </div>
+      <div className="feature">
+        <ion-icon name="lock-closed-outline" style={feature__icon}></ion-icon>
+        <h4>Privacidad y Seguridad</h4>
+        <p className="feature__text">
+          Tus datos se encuentran resguardados con diferentes modelos de proteccion, puedes estar
+          seguro que nadie robará la información
+        </p>
+      </div>
+      <div className="feature">
+        <ion-icon name="build-outline" style={feature__icon}></ion-icon>
+        <h4>Administra según tus propios criterios!</h4>
+        <p className="feature__text">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tenetur distinctio
+          necessitatibus pariatur voluptatibus.
+        </p>
+      </div>
+    </section>
   );
 };
 export default Home;

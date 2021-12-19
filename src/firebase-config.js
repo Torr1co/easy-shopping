@@ -22,7 +22,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-export const auth = getAuth();
+export const auth = getAuth(app);
 
 //initialize global variables
 let USER_ID = null;
@@ -60,6 +60,11 @@ export const getShopData = async (setShopNames, addShopSketch) => {
   const shopsSnap = await getDoc(USER_REF);
   const shopNames = shopsSnap.data()?.shopNames;
   const shopSketches = shopsSnap.data()?.shopSketches;
+
+  if (!shopsSnap.exists()) {
+    console.log('creating user');
+    setDoc(USER_REF, { shopNames: [] });
+  }
 
   setShopNames(shopNames || []);
   addShopSketch(shopSketches || {});
@@ -113,5 +118,9 @@ export const deleteShopName = async (shopName) => {
   console.log('deleting shop');
   await updateDoc(USER_REF, {
     shopNames: arrayRemove(shopName),
+  });
+  console.log('changing delete boolean... ');
+  await updateDoc(USER_REF, {
+    shopDeleted: true,
   });
 };

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 /// ///////////////////////////////////////Firebase
-import { GooglePopup, auth } from './firebase-config';
+import { auth } from './firebase-config';
 import { signOut } from '@firebase/auth';
-/// ///////////////////////////////////////
+/// /////////////////////////////////////// Extern
 import { ConfigProvider, Layout, Button, message } from 'antd';
 import 'antd/dist/antd.less';
 
@@ -15,15 +15,12 @@ import { Redirect, BrowserRouter as Router, Switch, Route } from 'react-router-d
 import './App.less';
 import './App.css';
 import Home from './components/Home';
-import ShopComplete from './components/ShopComplete';
 import logo from './img/shop__logo.jpg';
+import ShopComplete from './components/ShopComplete';
+import WelcomeOffline from './components/WelcomeOffline';
 
-/// ///////////////////////////////////////COMPONENTS
+import './style/queries.css';
 
-// setPersistence(auth, browserSessionPersistence);
-/// /////////////// APP
-// GETTERS & UPLOADS ... FROM FIREBASE
-// ADD ... FROM LOCAL SETTERS
 const { Content, Footer } = Layout;
 
 function App() {
@@ -57,24 +54,22 @@ function App() {
       return (
         <nav>
           <p className="welcome">Buenos Días, {user.displayName}</p>
-          <img src={logo} alt="Logo" className="logo" />
-          <Button type="primary" size="large" onClick={() => signOut(auth)}>
+          <img src={logo} alt="Logo" className="header__logo" />
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => {
+              signOut(auth);
+              setUser(null);
+            }}
+          >
             Cerrar Sesión
           </Button>
         </nav>
       );
     }
 
-    return (
-      <nav>
-        <p className="welcome">Inicia sesion para comenzar</p>
-        <img src={logo} alt="Logo" className="logo" />
-        <Button type="primary" size="large" onClick={() => GooglePopup(setUser, setError)}>
-          Comenzar
-        </Button>
-        {/*  */}
-      </nav>
-    );
+    return <WelcomeOffline setUser={setUser} setError={setError} />;
   };
 
   const PrivateRoute = ({ children, ...rest }) => {
@@ -100,12 +95,12 @@ function App() {
   return (
     <ConfigProvider locale={locale}>
       <Router>
-        {/* ------- lo hace español */}
-        <Layout style={{ minHeight: '100vh' }}>
-          <WelcomeMessage />
+        <Switch>
+          {/* ------- lo hace español */}
+          <Layout style={{ minHeight: '100vh' }}>
+            <WelcomeMessage />
 
-          <Content className="content">
-            <Switch>
+            <Content style={{ margin: '10rem 10rem' }}>
               <Route exact path="/">
                 <Home
                   user={user}
@@ -124,10 +119,12 @@ function App() {
                   shopName={selectedShop}
                 />
               </PrivateRoute>
-            </Switch>
-          </Content>
-          <Footer>Shop administration ©2021 Created by Fabrizio Torrico</Footer>
-        </Layout>
+            </Content>
+            <Footer style={{ backgroundColor: '#101d2c', paddingBottom: '6rem' }}>
+              <div className="copyright">Shop administration ©2021 Created by Fabrizio Torrico</div>
+            </Footer>
+          </Layout>
+        </Switch>
       </Router>
     </ConfigProvider>
   );

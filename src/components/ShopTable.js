@@ -94,7 +94,6 @@ const ShopTable = ({
   index,
 }) => {
   const [count, setCount] = useState(3);
-
   const updateWeekDataSource = (newValue) => {
     setWeekDataSource({
       ...weekDataSource,
@@ -182,7 +181,12 @@ const ShopTable = ({
         rowClassName={() => 'editable-row'}
         bordered
         dataSource={weekDataSource[dayKey]}
-        columns={[{ title: `${days[index]}  ${dayKey.slice(5)}`, children: [...columns] }]}
+        columns={[
+          {
+            title: `${days[index]} ${dayKey.slice(-2)} / ${dayKey.slice(5, -3)} `,
+            children: [...columns],
+          },
+        ]}
         pagination={{ position: ['none', 'none'] }}
         // key={i}
         style={{ border: '2px #d9d9d9 solid', marginBottom: '32px' }}
@@ -210,7 +214,7 @@ const ShopTable = ({
           return (
             <>
               <Table.Summary.Row>
-                <Table.Summary.Cell colSpan={2}>{balance}</Table.Summary.Cell>
+                <Table.Summary.Cell colSpan={columns.length - 1}>{balance}</Table.Summary.Cell>
                 <Table.Summary.Cell>Balance</Table.Summary.Cell>
               </Table.Summary.Row>
             </>

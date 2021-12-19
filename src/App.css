@@ -16,18 +16,17 @@ body {
   line-height: 1.6;
 }
 
+/*           NAV          */
+
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 50px;
+  padding: 0 8rem;
   height: 9rem;
   background-color: #101d2c;
 }
 
-/*           NAV          */
-/*           NAV          */
-/*           NAV          */
 nav > p {
   margin-bottom: 0;
   color: #f9f7f6;
@@ -36,9 +35,9 @@ nav > p {
   font-size: 1.9rem;
   font-weight: 500;
 }
-
-.logo {
-  height: 7.25rem;
+.header__logo {
+  height: 8rem;
+  justify-self: center;
 }
 
 .login {
@@ -71,41 +70,6 @@ nav > p {
 /*                        */
 /*       CONTENT          */
 /*                        */
-.content {
-  margin: 50px 0;
-  padding: 0 50px;
-  min-height: 54vh;
-}
-.layout__content {
-  min-height: 280px;
-  padding: 24px;
-  background: #fff;
-  box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 15%);
-}
-.space {
-  margin: 16px 0;
-}
-
-/* BUTTON */
-.dashed {
-  border: 3px dashed #d9d9d9;
-  background-color: transparent;
-}
-.shop {
-  height: 200px;
-}
-.shop p {
-  font-size: 2rem;
-}
-.shop-delete:hover {
-  color: #ff4d4f;
-}
-.shops {
-  grid-column: center-start / center-end;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
-  grid-gap: 7rem;
-}
 .icon-big {
   font-size: 64px;
 }
@@ -166,5 +130,3 @@ nav > p {
   font-weight: 400;
   transform: translateY(20%);
 }
-
-/* PICKER */

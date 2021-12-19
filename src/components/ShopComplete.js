@@ -105,12 +105,13 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
       />
     );
   };
+
   return (
     <div>
       <ShopNav />
       <Switch>
         <Route exact path={pathTable}>
-          <h1 style={{ textAlign: 'center' }}>{shopName}</h1>
+          <h2 style={{ textAlign: 'center' }}>{shopName}</h2>
 
           {weekKeys.map((dayKey, i) => (
             <ShopTable

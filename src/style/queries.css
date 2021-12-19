@@ -1,0 +1,22 @@
+@media only screen and (max-width: 50em) {
+  .header,
+  .sideInfo {
+    grid-column: 1 / -1;
+  }
+  .sideInfo__list {
+    grid-template-columns: repeat(3, min-content max-content);
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+  .sideInfo__img {
+    height: 6rem;
+    width: 6rem;
+  }
+}
+
+@media only screen and (max-width: 37.5em) {
+  .sideInfo__list {
+    grid-template-columns: min-content max-content;
+  }
+}
