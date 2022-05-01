@@ -42,7 +42,7 @@ const Home = ({
     if (user) {
       message.loading('cargando data del usuario...');
       checkUser(user.uid);
-      getShopData(setShopNames, addShopSketch)
+      getShopData(setShopNames, addShopSketch) //get SHOPSSS data
         .then(() => message.success('cargado con exito'))
         .catch((error) => message.error(error));
     }
@@ -155,8 +155,7 @@ const Home = ({
         <ion-icon name="checkmark-circle-outline" style={feature__icon}></ion-icon>
         <h4>Obten privilegios por ser usuario primerizo!</h4>
         <p className="feature__text">
-          Seras recompensado por encontrarte entre los nuevos usuarios de la app, desde desde
-          grandes descuentos hasta utilizar nuevas funcionalidades de primera mano.
+          Podras utilizar nuevas funcionalidades de primera mano antes que cualquier otro usuario.
         </p>
       </div>
       <div className="feature">
@@ -164,7 +163,8 @@ const Home = ({
         <h4>Renovaciones y mejoras constantes</h4>
         <p className="feature__text">
           Se iran agregando y retocando caracterizticas para que nuestros consumidores tengan un
-          poco de frescura. Estas estarán basadas en estudios de datos y marketing online.
+          poco de frescura. Estas estarán basadas en las opiniones de nuestros clientes y marketing
+          online.
         </p>
       </div>
       <div className="feature">
