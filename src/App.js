@@ -57,7 +57,6 @@ function App() {
           <img src={logo} alt="Logo" className="header__logo" />
           <Button
             type="primary"
-            size="large"
             onClick={() => {
               signOut(auth);
               setUser(null);
@@ -100,7 +99,7 @@ function App() {
           <Layout style={{ minHeight: '100vh' }}>
             <WelcomeMessage />
 
-            <Content style={{ margin: '10rem 10rem' }}>
+            <Content className="main__content">
               <Route exact path="/">
                 <Home
                   user={user}

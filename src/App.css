@@ -70,6 +70,12 @@ nav > p {
 /*                        */
 /*       CONTENT          */
 /*                        */
+.shoptable__wrapper {
+  overflow: auto;
+}
+.main__content {
+  margin: 10rem 10rem;
+}
 .icon-big {
   font-size: 64px;
 }

@@ -1,4 +1,13 @@
 @media only screen and (max-width: 50em) {
+  .header__logo {
+    height: 5rem;
+  }
+  nav {
+    padding: 0 4rem;
+  }
+  .welcome {
+    font-size: 1.4rem;
+  }
   .header,
   .sideInfo {
     grid-column: 1 / -1;
@@ -16,7 +25,30 @@
 }
 
 @media only screen and (max-width: 37.5em) {
+  h2 {
+    font-size: 2.5rem;
+  }
+  .header {
+    padding: 4rem;
+  }
+  .main__content {
+    margin: 3rem;
+  }
+  .features {
+    grid-template-columns: auto;
+    grid-gap: 3rem;
+  }
+  .feature__text {
+    grid-column: span 2;
+  }
+  .welcome {
+    display: none;
+  }
   .sideInfo__list {
     grid-template-columns: min-content max-content;
+  }
+
+  .shops {
+    grid-template-columns: auto;
   }
 }

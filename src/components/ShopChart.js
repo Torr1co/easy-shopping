@@ -60,13 +60,15 @@ const ShopChart = ({ monthData, selectedMonth }) => {
 
   return (
     <>
-      <div>
+      <div style={{ overflow: 'auto' }}>
         <h2 style={{ textAlign: 'center' }}>
           {monthsName[+selectedMonth.slice(-2) - 1]} {selectedMonth.slice(0, 4)}
         </h2>
         <div
           style={{
-            /* width: '800px', height: '500px', */ backgroundColor: 'white',
+            minWidth: '600px',
+            minHeight: '350px',
+            backgroundColor: 'white',
             padding: '30px',
           }}
         >

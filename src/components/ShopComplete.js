@@ -112,21 +112,25 @@ const ShopComplete = ({ selectedShop, selectedDate, shopName, user }) => {
       <Switch>
         <Route exact path={pathTable}>
           <h2 style={{ textAlign: 'center' }}>{shopName}</h2>
-
-          {weekKeys.map((dayKey, i) => (
-            <ShopTable
+          <div className="shoptable__wrapper">
+            {weekKeys.map((dayKey, i) => (
+              <ShopTable
+                selectedShop={selectedShop}
+                weekDataSource={weekDataSource}
+                setWeekDataSource={setWeekDataSource}
+                monthDataSource={monthDataSource}
+                setMonthDataSource={setMonthDataSource}
+                dayKey={dayKey}
+                index={i}
+                key={i}
+              />
+            ))}
+            <TotalTable
+              dataSource={weekDataSource}
+              weekKeys={weekKeys}
               selectedShop={selectedShop}
-              weekDataSource={weekDataSource}
-              setWeekDataSource={setWeekDataSource}
-              monthDataSource={monthDataSource}
-              setMonthDataSource={setMonthDataSource}
-              dayKey={dayKey}
-              index={i}
-              key={i}
             />
-          ))}
-
-          <TotalTable dataSource={weekDataSource} weekKeys={weekKeys} selectedShop={selectedShop} />
+          </div>
         </Route>
 
         <Route exact path={pathChart}>
